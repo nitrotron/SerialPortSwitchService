@@ -70,31 +70,9 @@ namespace SerialPortSwitchService
 
         public Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text)
         {
-            //if (!IsOpen) Open();
+
             SendCommand(cmd, text);
-            //StringBuilder response = new StringBuilder();
 
-            //while (true)
-            //{
-            //    try
-            //    {
-            //        response.Append(ReadLine());
-            //    }
-            //    catch
-            //    {
-            //        //Close();
-            //        return new Dictionary<string, decimal>();
-            //    }
-            //    if (response.ToString().Contains(";"))
-            //        break;
-
-            //}
-
-            ////Close();
-
-            //return parseVaribles(response.ToString());
-
-            //todo, maybe wait for a status update.
             return Status;
         }
 
@@ -174,54 +152,42 @@ namespace SerialPortSwitchService
             Close();
         }
 
-        ////todo fix this
-        //class program
-        //{
-        //    private SerialSwitchServiceHost _SerialSwitch = new SerialSwitchServiceHost();
-        //    public SerialSwitchServiceHost SerialSwitch
-        //    {
-        //        get { return _SerialSwitch; }
-        //        set { _SerialSwitch = value; }
-        //    }
 
-            static void Main(string[] args)
+        static void Main(string[] args)
+        {
+            Uri baseAddress = new Uri("http://localhost:8080/SerialSwitch");
+            SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
+            prog.OpenPort();
+
+            
+            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
+            threadRec.Start();
+
+            // Create the ServiceHost.
+            using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
             {
-                Uri baseAddress = new Uri("http://localhost:8080/SerialSwitch");
-                SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
-                prog.OpenPort();
-
-                //SerialPort port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
-                //HelloWorldService hws = new HelloWorldService();
-                //prog.hws.setPort(prog.port);
-
-                Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
-                threadRec.Start();
-
-                // Create the ServiceHost.
-                using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
-                {
-                    // Enable metadata publishing.
-                    ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-                    smb.HttpGetEnabled = true;
-                    smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
-                    host.Description.Behaviors.Add(smb);
+                // Enable metadata publishing.
+                ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+                smb.HttpGetEnabled = true;
+                smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
+                host.Description.Behaviors.Add(smb);
 
 
-                    // Open the ServiceHost to start listening for messages. Since
-                    // no endpoints are explicitly configured, the runtime will create
-                    // one endpoint per base address for each service contract implemented
-                    // by the service.
-                    host.Open();
+                // Open the ServiceHost to start listening for messages. Since
+                // no endpoints are explicitly configured, the runtime will create
+                // one endpoint per base address for each service contract implemented
+                // by the service.
+                host.Open();
 
 
-                    Console.WriteLine("The service is ready at {0}", baseAddress);
-                    Console.WriteLine("Press <Enter> to stop the service.");
-                    Console.ReadLine();
+                Console.WriteLine("The service is ready at {0}", baseAddress);
+                Console.WriteLine("Press <Enter> to stop the service.");
+                Console.ReadLine();
 
-                    // Close the ServiceHost.
-                    host.Close();
-                }
+                // Close the ServiceHost.
+                host.Close();
             }
         }
+    }
     //}
 }

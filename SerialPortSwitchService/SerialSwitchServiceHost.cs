@@ -174,24 +174,31 @@ namespace SerialPortSwitchService
             Close();
         }
 
-        //todo fix this
-        class program
-        {
+        ////todo fix this
+        //class program
+        //{
+        //    private SerialSwitchServiceHost _SerialSwitch = new SerialSwitchServiceHost();
+        //    public SerialSwitchServiceHost SerialSwitch
+        //    {
+        //        get { return _SerialSwitch; }
+        //        set { _SerialSwitch = value; }
+        //    }
+
             static void Main(string[] args)
             {
-                Uri baseAddress = new Uri("http://localhost:8080/hello");
+                Uri baseAddress = new Uri("http://localhost:8080/SerialSwitch");
                 SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
                 prog.OpenPort();
 
                 //SerialPort port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
                 //HelloWorldService hws = new HelloWorldService();
-                prog.hws.setPort(prog.port);
+                //prog.hws.setPort(prog.port);
 
                 Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
-                //threadRec.Start();
+                threadRec.Start();
 
                 // Create the ServiceHost.
-                using (ServiceHost host = new ServiceHost(typeof(HelloWorldService), baseAddress))
+                using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
                 {
                     // Enable metadata publishing.
                     ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
@@ -216,5 +223,5 @@ namespace SerialPortSwitchService
                 }
             }
         }
-    }
+    //}
 }

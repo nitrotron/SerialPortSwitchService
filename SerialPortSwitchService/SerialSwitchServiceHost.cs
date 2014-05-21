@@ -120,6 +120,10 @@ namespace SerialPortSwitchService
                 Console.WriteLine(response.ToString());
                 Dictionary<string, decimal> responseDictionary = parseVaribles(response.ToString());
                 //TODO need to merge this with the status
+                foreach (var item in responseDictionary)
+                {
+                    _Status[item.Key] = item.Value;
+                }
             }
         }
         public Dictionary<string, decimal> parseVaribles(string response)

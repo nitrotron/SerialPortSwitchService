@@ -106,7 +106,7 @@ namespace SerialPortSwitchService
             response = response.Replace("\n", "");
             response = response.Replace(" ", "");
 
-            
+
 
             Console.WriteLine(response.ToString());
             Dictionary<string, decimal> responseDictionary = parseVaribles(response.ToString());
@@ -194,7 +194,6 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            port.PortName = "
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

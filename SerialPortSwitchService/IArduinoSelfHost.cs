@@ -10,7 +10,7 @@ using System.IO.Ports;
 namespace SerialPortSwitchService
 {
     [ServiceContract]
-    public interface ArduinoSelfHost //: IArduinoSerial
+    public interface IArduinoSelfHost //: IArduinoSerial
     {
         [OperationContract]
         string GetRawStatus();

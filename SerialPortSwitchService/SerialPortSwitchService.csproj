@@ -68,7 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArduinoSelfHost.cs" />
+    <Compile Include="IArduinoSelfHost.cs" />
     <Compile Include="SerialSwitchServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

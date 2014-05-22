@@ -13,7 +13,7 @@ namespace SerialPortSwitchService
 
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    class SerialSwitchServiceHost : ArduinoSelfHost
+    class SerialSwitchServiceHost : IArduinoSelfHost
     {
         private static Dictionary<string, decimal> _Status;
         Dictionary<string, decimal> Status
@@ -157,15 +157,7 @@ namespace SerialPortSwitchService
         {
             readSerial();
         }
-        ////todo fix this
-        //class program
-        //{
-        //    private SerialSwitchServiceHost _SerialSwitch = new SerialSwitchServiceHost();
-        //    public SerialSwitchServiceHost SerialSwitch
-        //    {
-        //        get { return _SerialSwitch; }
-        //        set { _SerialSwitch = value; }
-        //    }
+
 
         static void Main(string[] args)
         {
@@ -180,21 +172,19 @@ namespace SerialPortSwitchService
             port.ReadTimeout = SerialPort.InfiniteTimeout;
             port.WriteTimeout = 500;
 
-            prog.setPort(port);
-            prog.OpenPort();
-
-            //SerialPort port = new SerialPort("COM3", 9600, Parity.None, 8, StopBits.One);
-            //HelloWorldService hws = new HelloWorldService();
-            //prog.hws.setPort(prog.port);
-
-            //Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
-            //threadRec.Start();
-            prog.InitiateCallbacks();
+            //prog.setPort(port);
+            //prog.OpenPort();
+            //prog.InitiateCallbacks();
 
             // Create the ServiceHost.
+            var binding = new BasicHttpBinding();
             using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
+            //attempt 2 using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
             {
-                // Enable metadata publishing.
+                //attempt #2
+                //  host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
+
+                //// Enable metadata publishing.
                 ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
                 smb.HttpGetEnabled = true;
                 //smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;

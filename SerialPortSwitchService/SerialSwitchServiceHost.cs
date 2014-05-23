@@ -42,37 +42,37 @@ namespace SerialPortSwitchService
             return Status;
         }
 
-        public void SendCommand(ArduinoCommands.CommandTypes cmd, string text)
-        {
-            StringBuilder sendCmd = new StringBuilder();
+        //public void SendCommand(ArduinoCommands.CommandTypes cmd, string text)
+        //{
+        //    StringBuilder sendCmd = new StringBuilder();
 
-            sendCmd.Append((int)cmd);
-            if (!string.IsNullOrEmpty(text))
-                sendCmd.Append("," + text + ";");
-            else
-                sendCmd.Append(";");
-
-
-            if (sendCmd != null && !String.IsNullOrEmpty(sendCmd.ToString()))
-            {
-                //if (!IsOpen) Open();
-                // FIXTHIS there was a problem with the serial not being open
-                _Serial.WriteLine(sendCmd.ToString());
-            }
-        }
+        //    sendCmd.Append((int)cmd);
+        //    if (!string.IsNullOrEmpty(text))
+        //        sendCmd.Append("," + text + ";");
+        //    else
+        //        sendCmd.Append(";");
 
 
-        public Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text)
-        {
+        //    if (sendCmd != null && !String.IsNullOrEmpty(sendCmd.ToString()))
+        //    {
+        //        //if (!IsOpen) Open();
+        //        // FIXTHIS there was a problem with the serial not being open
+        //        _Serial.WriteLine(sendCmd.ToString());
+        //    }
+        //}
 
-            SendCommand(cmd, text);
 
-            return Status;
-        }
+        //public Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text)
+        //{
+
+        //    SendCommand(cmd, text);
+
+        //    return Status;
+        //}
 
         public void UpdateStatus()
         {
-            SendCommand(ArduinoCommands.CommandTypes.ReturnStatus, "");
+            //SendCommand(ArduinoCommands.CommandTypes.ReturnStatus, "");
         }
 
         public void readSerial()
@@ -165,6 +165,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
+            port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;
@@ -172,19 +173,22 @@ namespace SerialPortSwitchService
             port.ReadTimeout = SerialPort.InfiniteTimeout;
             port.WriteTimeout = 500;
 
-            //prog.setPort(port);
-            //prog.OpenPort();
-            //prog.InitiateCallbacks();
+            prog.setPort(port);
+            prog.OpenPort();
+            prog.InitiateCallbacks();
 
             // Create the ServiceHost.
-            var binding = new BasicHttpBinding();
+            // attempt 1
             using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
-            //attempt 2 using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
             {
-                //attempt #2
-                //  host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
+                //var binding = new BasicHttpBinding();
+                //using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
+                //{
 
-                //// Enable metadata publishing.
+                ////attempt #2
+                // host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
+
+                // Enable metadata publishing.
                 ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
                 smb.HttpGetEnabled = true;
                 //smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;

@@ -16,10 +16,10 @@ namespace SerialPortSwitchService
         string GetRawStatus();
         [OperationContract]
         Dictionary<string, decimal> GetStatus();
-        [OperationContract]
-        void SendCommand(ArduinoCommands.CommandTypes cmd, string text);
-        [OperationContract]
-        Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text);
+        //[OperationContract]
+        //void SendCommand(ArduinoCommands.CommandTypes cmd, string text);
+        //[OperationContract]
+        //Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text);
         [OperationContract]
         void UpdateStatus();
     }

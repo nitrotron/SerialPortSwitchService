@@ -79,19 +79,29 @@ namespace SerialPortSwitchService
         {
             StringBuilder response = new StringBuilder();
 
-            response.Append(_Serial.ReadTo(";"));
-            response = response.Replace("\r", "");
-            response = response.Replace("\n", "");
-            response = response.Replace(" ", "");
-
-
-
-            Console.WriteLine(response.ToString());
-            Dictionary<string, decimal> responseDictionary = parseVaribles(response.ToString());
-
-            foreach (var item in responseDictionary)
+            while (true)
             {
-                _Status[item.Key] = item.Value;
+                try
+                {
+                    response.Append(_Serial.ReadTo(";"));
+                    response = response.Replace("\r", "");
+                    response = response.Replace("\n", "");
+                    response = response.Replace(" ", "");
+
+                }
+                catch
+                {
+                    //Close();
+                    //return string.Empty;
+                }
+                Console.WriteLine(response.ToString());
+                Dictionary<string, decimal> responseDictionary = parseVaribles(response.ToString());
+                
+                foreach (var item in responseDictionary)
+                {
+                    _Status[item.Key] = item.Value;
+                }
+
             }
 
         }
@@ -176,6 +186,10 @@ namespace SerialPortSwitchService
             prog.setPort(port);
             prog.OpenPort();
             prog.InitiateCallbacks();
+
+            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
+            threadRec.Start();
+
 
             // Create the ServiceHost.
             // attempt 1

@@ -22,6 +22,7 @@ namespace SerialPortSwitchService
             set { _Status = value; }
         }
         private static SerialPort _Serial;
+        private static int count;
         public SerialSwitchServiceHost()
         {
             _Status = new Dictionary<string, decimal>();
@@ -29,6 +30,11 @@ namespace SerialPortSwitchService
 
         private void setPort(SerialPort port)
         {
+            if (count == null)
+            {
+                Console.WriteLine("Initializing Count");
+                count = 0;
+            }
             _Serial = port;
         }
 
@@ -39,6 +45,7 @@ namespace SerialPortSwitchService
 
         public Dictionary<string, decimal> GetStatus()
         {
+            count = count + 1;
             return Status;
         }
 
@@ -83,6 +90,8 @@ namespace SerialPortSwitchService
             {
                 try
                 {
+                    //System.Threading.Thread.Sleep(5000);
+                    response = new StringBuilder();
                     response.Append(_Serial.ReadTo(";"));
                     response = response.Replace("\r", "");
                     response = response.Replace("\n", "");
@@ -94,14 +103,18 @@ namespace SerialPortSwitchService
                     //Close();
                     //return string.Empty;
                 }
+
                 Console.WriteLine(response.ToString());
                 Dictionary<string, decimal> responseDictionary = parseVaribles(response.ToString());
-                
+
                 foreach (var item in responseDictionary)
                 {
                     _Status[item.Key] = item.Value;
                 }
 
+
+
+                Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
             }
 
         }
@@ -151,6 +164,8 @@ namespace SerialPortSwitchService
             if (!_Serial.IsOpen)
                 _Serial.Open();
 
+            string throwaway = _Serial.ReadExisting();
+
         }
         public void ClosePort()
         {
@@ -175,7 +190,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            port.PortName = "/dev/ttyACM0";
+            //port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;
@@ -184,8 +199,10 @@ namespace SerialPortSwitchService
             port.WriteTimeout = 500;
 
             prog.setPort(port);
+            prog.ClosePort();
             prog.OpenPort();
-            prog.InitiateCallbacks();
+
+            //prog.InitiateCallbacks();
 
             Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
             threadRec.Start();
@@ -193,20 +210,21 @@ namespace SerialPortSwitchService
 
             // Create the ServiceHost.
             // attempt 1
-            using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
+            //using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
+            //{
+            var binding = new BasicHttpBinding();
+            using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
             {
-                //var binding = new BasicHttpBinding();
-                //using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
-                //{
 
-                ////attempt #2
-                // host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
+                //attempt #2
+                host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
 
                 // Enable metadata publishing.
-                ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-                smb.HttpGetEnabled = true;
-                //smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
-                host.Description.Behaviors.Add(smb);
+                //attempt 1
+                //ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+                //smb.HttpGetEnabled = true;
+                ////smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
+                //host.Description.Behaviors.Add(smb);
 
 
                 // Open the ServiceHost to start listening for messages. Since

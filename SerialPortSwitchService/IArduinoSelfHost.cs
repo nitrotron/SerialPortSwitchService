@@ -16,6 +16,8 @@ namespace SerialPortSwitchService
         string GetRawStatus();
         [OperationContract]
         Dictionary<string, decimal> GetStatus();
+        [OperationContract]
+        void SendCommand(int arduinoCommands, string text);
         //[OperationContract]
         //void SendCommand(ArduinoCommands.CommandTypes cmd, string text);
         //[OperationContract]

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BrewduinoCatalogLib;
+//using BrewduinoCatalogLib;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.IO.Ports;
@@ -49,24 +49,24 @@ namespace SerialPortSwitchService
             return Status;
         }
 
-        //public void SendCommand(ArduinoCommands.CommandTypes cmd, string text)
-        //{
-        //    StringBuilder sendCmd = new StringBuilder();
+        public void SendCommand(int arduinoCommands, string text)
+        {
+            StringBuilder sendcmd = new StringBuilder();
 
-        //    sendCmd.Append((int)cmd);
-        //    if (!string.IsNullOrEmpty(text))
-        //        sendCmd.Append("," + text + ";");
-        //    else
-        //        sendCmd.Append(";");
+            sendcmd.Append(arduinoCommands);
+            if (!string.IsNullOrEmpty(text))
+                sendcmd.Append("," + text + ";");
+            else
+                sendcmd.Append(";");
 
 
-        //    if (sendCmd != null && !String.IsNullOrEmpty(sendCmd.ToString()))
-        //    {
-        //        //if (!IsOpen) Open();
-        //        // FIXTHIS there was a problem with the serial not being open
-        //        _Serial.WriteLine(sendCmd.ToString());
-        //    }
-        //}
+            if (sendcmd != null && !string.IsNullOrEmpty(sendcmd.ToString()))
+            {
+                //if (!isopen) open();
+                // fixthis there was a problem with the serial not being open
+                _Serial.WriteLine(sendcmd.ToString());
+            }
+        }
 
 
         //public Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text)
@@ -190,7 +190,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            //port.PortName = "/dev/ttyACM0";
+            port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

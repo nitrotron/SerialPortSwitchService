@@ -15,8 +15,8 @@ namespace SerialPortSwitchService
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     class SerialSwitchServiceHost : IArduinoSelfHost
     {
-        private static Dictionary<string, decimal> _Status;
-        Dictionary<string, decimal> Status
+        private static Dictionary<string, float> _Status;
+        Dictionary<string, float> Status
         {
             get { return _Status; }
             set { _Status = value; }
@@ -25,7 +25,7 @@ namespace SerialPortSwitchService
         private static int count;
         public SerialSwitchServiceHost()
         {
-            _Status = new Dictionary<string, decimal>();
+            _Status = new Dictionary<string, float>();
         }
 
         private void setPort(SerialPort port)
@@ -43,33 +43,31 @@ namespace SerialPortSwitchService
             return string.Empty;
         }
 
-        public Dictionary<string, decimal> GetStatus()
+        public Dictionary<string, float> GetStatus()
         {
             count = count + 1;
             return Status;
         }
 
-        //public void SendCommand(ArduinoCommands.CommandTypes cmd, string text)
-        //{
-        //    StringBuilder sendCmd = new StringBuilder();
+        public void SendCommand(int arduinoCommands, string text)
+        {
+            StringBuilder sendCmd = new StringBuilder();
 
-        //    sendCmd.Append((int)cmd);
-        //    if (!string.IsNullOrEmpty(text))
-        //        sendCmd.Append("," + text + ";");
-        //    else
-        //        sendCmd.Append(";");
-
-
-        //    if (sendCmd != null && !String.IsNullOrEmpty(sendCmd.ToString()))
-        //    {
-        //        //if (!IsOpen) Open();
-        //        // FIXTHIS there was a problem with the serial not being open
-        //        _Serial.WriteLine(sendCmd.ToString());
-        //    }
-        //}
+            sendCmd.Append(arduinoCommands);
+            if (!string.IsNullOrEmpty(text))
+                sendCmd.Append("," + text + ";");
+            else
+                sendCmd.Append(";");
 
 
-        //public Dictionary<string, decimal> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text)
+            if (sendCmd != null && !String.IsNullOrEmpty(sendCmd.ToString()))
+            {
+                _Serial.WriteLine(sendCmd.ToString());
+            }
+        }
+
+
+        //public Dictionary<string, float> SendCommandWithResponse(ArduinoCommands.CommandTypes cmd, string text)
         //{
 
         //    SendCommand(cmd, text);
@@ -105,7 +103,7 @@ namespace SerialPortSwitchService
                 }
 
                 Console.WriteLine(response.ToString());
-                Dictionary<string, decimal> responseDictionary = parseVaribles(response.ToString());
+                Dictionary<string, float> responseDictionary = parseVaribles(response.ToString());
 
                 foreach (var item in responseDictionary)
                 {
@@ -118,7 +116,7 @@ namespace SerialPortSwitchService
             }
 
         }
-        public Dictionary<string, decimal> parseVaribles(string response)
+        public Dictionary<string, float> parseVaribles(string response)
         {
             string[] pStrings;
             string message;
@@ -138,7 +136,7 @@ namespace SerialPortSwitchService
                 message = pStrings[0];
             }
 
-            Dictionary<string, decimal> dict = new Dictionary<string, decimal>();
+            Dictionary<string, float> dict = new Dictionary<string, float>();
 
             string[] pairs = message.Split(',');
 
@@ -149,8 +147,8 @@ namespace SerialPortSwitchService
                 if (pair.Length != 2)
                     break;
 
-                decimal temp;
-                decimal.TryParse(pair[1], out temp);
+                float temp;
+                float.TryParse(pair[1], out temp);
 
                 dict.Add(pair[0], temp);
             }

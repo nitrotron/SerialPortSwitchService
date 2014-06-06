@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using BrewduinoCatalogLib;
+//using BrewduinoCatalogLib;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.IO.Ports;
@@ -188,7 +188,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            //port.PortName = "/dev/ttyACM0";
+            port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

@@ -181,6 +181,21 @@ namespace SerialPortSwitchService
             readSerial();
         }
 
+        private void setInitialTime()
+        {
+            int setTimeCmdEnum = 24;
+            StringBuilder cmd = new StringBuilder();
+
+            cmd.Append(DateTime.Now.Hour.ToString() + ",");
+            cmd.Append(DateTime.Now.Minute.ToString() + ",");
+            cmd.Append(DateTime.Now.Second.ToString() + ",");
+            cmd.Append(DateTime.Now.Month.ToString() + ",");
+            cmd.Append(DateTime.Now.Day.ToString() + ",");
+            cmd.Append(DateTime.Now.Year.ToString());
+
+            SendCommand(setTimeCmdEnum, cmd.ToString());
+            }
+
 
         static void Main(string[] args)
         {
@@ -201,6 +216,7 @@ namespace SerialPortSwitchService
             prog.OpenPort();
 
             //prog.InitiateCallbacks();
+            prog.setInitialTime();
 
             Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
             threadRec.Start();
@@ -243,6 +259,7 @@ namespace SerialPortSwitchService
             }
         }
 
+       
 
 
 

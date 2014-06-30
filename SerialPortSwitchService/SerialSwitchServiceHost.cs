@@ -15,17 +15,20 @@ namespace SerialPortSwitchService
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     class SerialSwitchServiceHost : IArduinoSelfHost
     {
-        private static Dictionary<string, float> _Status;
-        Dictionary<string, float> Status
+        private static Dictionary<string, string> _Status;
+        Dictionary<string, string> Status
         {
-            get { return _Status; }
+            get
+            {
+                return _Status;
+            }
             set { _Status = value; }
         }
         private static SerialPort _Serial;
         private static int count;
         public SerialSwitchServiceHost()
         {
-            _Status = new Dictionary<string, float>();
+            _Status = new Dictionary<string, string>();
         }
 
         private void setPort(SerialPort port)
@@ -43,9 +46,10 @@ namespace SerialPortSwitchService
             return string.Empty;
         }
 
-        public Dictionary<string, float> GetStatus()
+        public Dictionary<string, string> GetStatus()
         {
             count = count + 1;
+            Status.Add("ServerTime", DateTime.Now.ToString());
             return Status;
         }
 
@@ -103,7 +107,7 @@ namespace SerialPortSwitchService
                 }
 
                 Console.WriteLine(response.ToString());
-                Dictionary<string, float> responseDictionary = parseVaribles(response.ToString());
+                Dictionary<string, string> responseDictionary = parseVaribles(response.ToString());
 
                 foreach (var item in responseDictionary)
                 {
@@ -116,7 +120,7 @@ namespace SerialPortSwitchService
             }
 
         }
-        public Dictionary<string, float> parseVaribles(string response)
+        public Dictionary<string, string> parseVaribles(string response)
         {
             string[] pStrings;
             string message;
@@ -136,7 +140,7 @@ namespace SerialPortSwitchService
                 message = pStrings[0];
             }
 
-            Dictionary<string, float> dict = new Dictionary<string, float>();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
 
             string[] pairs = message.Split(',');
 
@@ -147,10 +151,10 @@ namespace SerialPortSwitchService
                 if (pair.Length != 2)
                     break;
 
-                float temp;
-                float.TryParse(pair[1], out temp);
+                //float temp;
+                //float.TryParse(pair[1], out temp);
 
-                dict.Add(pair[0], temp);
+                dict.Add(pair[0], pair[0]);
             }
 
 
@@ -194,7 +198,7 @@ namespace SerialPortSwitchService
             cmd.Append(DateTime.Now.Year.ToString());
 
             SendCommand(setTimeCmdEnum, cmd.ToString());
-            }
+        }
 
 
         static void Main(string[] args)
@@ -259,7 +263,7 @@ namespace SerialPortSwitchService
             }
         }
 
-       
+
 
 
 

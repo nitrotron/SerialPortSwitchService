@@ -125,9 +125,9 @@ namespace SerialPortSwitchService
         {
             string[] pStrings;
             string message;
-            if (response.Contains(':'))
+            if (response.Contains('@'))
             {
-                pStrings = response.Split(':');
+                pStrings = response.Split('@');
                 message = pStrings[1];
             }
             else

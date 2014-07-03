@@ -49,7 +49,8 @@ namespace SerialPortSwitchService
         public Dictionary<string, string> GetStatus()
         {
             count = count + 1;
-            Status.Add("ServerTime", DateTime.Now.ToString());
+            Status["ServerTime"] = DateTime.Now.ToString();
+            //Status.Add("ServerTime", DateTime.Now.ToString());
             return Status;
         }
 
@@ -154,7 +155,7 @@ namespace SerialPortSwitchService
                 //float temp;
                 //float.TryParse(pair[1], out temp);
 
-                dict.Add(pair[0], pair[0]);
+                dict.Add(pair[0], pair[1]);
             }
 
 
@@ -207,7 +208,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            port.PortName = "/dev/ttyACM0";
+           // port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

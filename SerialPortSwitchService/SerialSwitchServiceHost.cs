@@ -155,11 +155,27 @@ namespace SerialPortSwitchService
                 //float temp;
                 //float.TryParse(pair[1], out temp);
 
-                dict.Add(pair[0], pair[1]);
+                if (pair[0] == "ClearTimers")
+                    ClearTimers();
+                else
+                    dict.Add(pair[0], pair[1]);
             }
 
 
             return dict;
+        }
+
+        private void ClearTimers()
+        {
+            if (Status.ContainsKey("TotalTimers"))
+            {
+                int totalTimers;
+                int.TryParse(Status["TotalTimers"], out totalTimers);
+                for (int i = 0; i < totalTimers; i++)
+                {
+                    Status.Remove("Timer" + i);
+                }
+            }
         }
 
         public void OpenPort()
@@ -208,7 +224,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-           // port.PortName = "/dev/ttyACM0";
+            // port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

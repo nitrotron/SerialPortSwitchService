@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.IO.Ports;
 using System.Threading;
+using System.Globalization;
 
 namespace SerialPortSwitchService
 {
@@ -33,11 +34,10 @@ namespace SerialPortSwitchService
 
         private void setPort(SerialPort port)
         {
-            if (count == null)
-            {
-                Console.WriteLine("Initializing Count");
-                count = 0;
-            }
+
+            Console.WriteLine("Initializing Count");
+            count = 0;
+
             _Serial = port;
         }
 
@@ -49,7 +49,8 @@ namespace SerialPortSwitchService
         public Dictionary<string, string> GetStatus()
         {
             count = count + 1;
-            Status["ServerTime"] = DateTime.Now.ToString();
+            CultureInfo ci = new CultureInfo("en-US");
+            Status["ServerTime"] = DateTime.Now.ToString(ci);
             //Status.Add("ServerTime", DateTime.Now.ToString());
             return Status;
         }
@@ -117,7 +118,7 @@ namespace SerialPortSwitchService
 
 
 
-                Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
+              //  Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
             }
 
         }
@@ -206,14 +207,18 @@ namespace SerialPortSwitchService
         {
             int setTimeCmdEnum = 24;
             StringBuilder cmd = new StringBuilder();
+            CultureInfo ci = new CultureInfo("en-US");
 
-            cmd.Append(DateTime.Now.Hour.ToString() + ",");
-            cmd.Append(DateTime.Now.Minute.ToString() + ",");
-            cmd.Append(DateTime.Now.Second.ToString() + ",");
-            cmd.Append(DateTime.Now.Month.ToString() + ",");
-            cmd.Append(DateTime.Now.Day.ToString() + ",");
-            cmd.Append(DateTime.Now.Year.ToString());
 
+            cmd.Append(DateTime.Now.Hour.ToString(ci) + ",");
+            cmd.Append(DateTime.Now.Minute.ToString(ci) + ","); 
+            cmd.Append(DateTime.Now.Second.ToString(ci) + ",");
+            cmd.Append(DateTime.Now.Month.ToString(ci) + ",");
+            cmd.Append(DateTime.Now.Day.ToString(ci) + ",");
+            cmd.Append(DateTime.Now.Year.ToString(ci));
+
+            Console.WriteLine("Sending: " + setTimeCmdEnum + "," + cmd);
+            System.Threading.Thread.Sleep(5000);
             SendCommand(setTimeCmdEnum, cmd.ToString());
         }
 
@@ -224,7 +229,7 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            // port.PortName = "/dev/ttyACM0";
+            port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

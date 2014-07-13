@@ -27,6 +27,14 @@ namespace SerialPortSwitchService
         }
         private static SerialPort _Serial;
         private static int count;
+        public static bool IsLinux
+        {
+            get
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
         public SerialSwitchServiceHost()
         {
             _Status = new Dictionary<string, string>();
@@ -99,7 +107,8 @@ namespace SerialPortSwitchService
                     response.Append(_Serial.ReadTo(";"));
                     response = response.Replace("\r", "");
                     response = response.Replace("\n", "");
-                    response = response.Replace(" ", "");
+                    //response = response.Replace(" ", "");
+
 
                 }
                 catch
@@ -118,7 +127,7 @@ namespace SerialPortSwitchService
 
 
 
-              //  Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
+                //  Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
             }
 
         }
@@ -211,7 +220,7 @@ namespace SerialPortSwitchService
 
 
             cmd.Append(DateTime.Now.Hour.ToString(ci) + ",");
-            cmd.Append(DateTime.Now.Minute.ToString(ci) + ","); 
+            cmd.Append(DateTime.Now.Minute.ToString(ci) + ",");
             cmd.Append(DateTime.Now.Second.ToString(ci) + ",");
             cmd.Append(DateTime.Now.Month.ToString(ci) + ",");
             cmd.Append(DateTime.Now.Day.ToString(ci) + ",");
@@ -229,7 +238,8 @@ namespace SerialPortSwitchService
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
-            port.PortName = "/dev/ttyACM0";
+            if (IsLinux)
+                port.PortName = "/dev/ttyACM0";
             port.BaudRate = 9600;
             port.Parity = Parity.None;
             port.DataBits = 8;

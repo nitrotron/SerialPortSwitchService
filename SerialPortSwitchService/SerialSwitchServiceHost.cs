@@ -120,13 +120,17 @@ namespace SerialPortSwitchService
                 Console.WriteLine(response.ToString());
                 Dictionary<string, string> responseDictionary = parseVaribles(response.ToString());
 
+
                 foreach (var item in responseDictionary)
                 {
                     _Status[item.Key] = item.Value;
+                    if (item.Key == "NoAddress")
+                        throw new BadOneWireException("Found no address for " + item.Value);
+                        
                 }
 
 
-
+                
                 //  Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
             }
 

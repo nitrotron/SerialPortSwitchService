@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BadOneWireException.cs" />
     <Compile Include="IArduinoSelfHost.cs" />
     <Compile Include="SerialSwitchServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

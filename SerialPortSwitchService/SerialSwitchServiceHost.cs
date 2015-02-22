@@ -60,7 +60,9 @@ namespace SerialPortSwitchService
             count = count + 1;
             CultureInfo ci = new CultureInfo("en-US");
             Status["ServerTime"] = DateTime.Now.ToString(ci);
-            //Status.Add("ServerTime", DateTime.Now.ToString());
+            
+
+
             return Status;
         }
 
@@ -130,12 +132,7 @@ namespace SerialPortSwitchService
                     _Status[item.Key] = item.Value;
                     if (item.Key == "NoAddress")
                         throw new BadOneWireException("Found no address for " + item.Value);
-
                 }
-
-
-
-                //  Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
             }
 
         }
@@ -181,6 +178,13 @@ namespace SerialPortSwitchService
 
 
             return dict;
+        }
+
+        private void SetTestData()
+        {
+            _Status["Thermometer0"] = "100.5";
+            _Status["ThermometerHighAlarm0"] = "212";
+            _Status["ThermometerLowAlarm0"] = "14";
         }
 
         private void ClearTimers()
@@ -248,18 +252,18 @@ namespace SerialPortSwitchService
             port.PortName = "COM3";
             if (IsLinux)
                 port.PortName = "/dev/ttyACM0";
-            //            port.BaudRate = 9600;
-            //            port.Parity = Parity.None;
-            //            port.DataBits = 8;
-            //            port.StopBits = StopBits.One;
-            //            port.ReadTimeout = SerialPort.InfiniteTimeout;
-            //            port.WriteTimeout = 500;
-            //
-            //            prog.setPort(port);
+            port.BaudRate = 9600;
+            port.Parity = Parity.None;
+            port.DataBits = 8;
+            port.StopBits = StopBits.One;
+            port.ReadTimeout = SerialPort.InfiniteTimeout;
+            port.WriteTimeout = 500;
+
+            prog.setPort(port);
+
             //            prog.ClosePort();
             //            prog.OpenPort();
             //
-            //            //prog.InitiateCallbacks();
             //            prog.setInitialTime();
 
             //            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
@@ -280,7 +284,7 @@ namespace SerialPortSwitchService
             stp.HttpHelpPageEnabled = false;
             host.Open();
 
-
+            prog.SetTestData();
             //attempt #2
             //      host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
 

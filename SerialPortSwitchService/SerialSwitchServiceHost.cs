@@ -8,6 +8,7 @@ using System.ServiceModel.Description;
 using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
+using System.ServiceModel.Web;
 
 namespace SerialPortSwitchService
 {
@@ -63,11 +64,14 @@ namespace SerialPortSwitchService
             return Status;
         }
 
-        public void SendCommand(int arduinoCommands, string text)
+        public void SendCommand(string arduinoCommands, string text)
         {
             StringBuilder sendCmd = new StringBuilder();
+            int aCmd;
+            int.TryParse(arduinoCommands, out aCmd);
 
-            sendCmd.Append(arduinoCommands);
+
+            sendCmd.Append(aCmd);
             if (!string.IsNullOrEmpty(text))
                 sendCmd.Append("," + text + ";");
             else
@@ -126,11 +130,11 @@ namespace SerialPortSwitchService
                     _Status[item.Key] = item.Value;
                     if (item.Key == "NoAddress")
                         throw new BadOneWireException("Found no address for " + item.Value);
-                        
+
                 }
 
 
-                
+
                 //  Console.WriteLine("We now have " + _Status.Count + " Items in the status. Count = " + count);
             }
 
@@ -232,7 +236,7 @@ namespace SerialPortSwitchService
 
             Console.WriteLine("Sending: " + setTimeCmdEnum + "," + cmd);
             System.Threading.Thread.Sleep(5000);
-            SendCommand(setTimeCmdEnum, cmd.ToString());
+            SendCommand(setTimeCmdEnum.ToString(), cmd.ToString());
         }
 
 
@@ -244,59 +248,59 @@ namespace SerialPortSwitchService
             port.PortName = "COM3";
             if (IsLinux)
                 port.PortName = "/dev/ttyACM0";
-            port.BaudRate = 9600;
-            port.Parity = Parity.None;
-            port.DataBits = 8;
-            port.StopBits = StopBits.One;
-            port.ReadTimeout = SerialPort.InfiniteTimeout;
-            port.WriteTimeout = 500;
+            //            port.BaudRate = 9600;
+            //            port.Parity = Parity.None;
+            //            port.DataBits = 8;
+            //            port.StopBits = StopBits.One;
+            //            port.ReadTimeout = SerialPort.InfiniteTimeout;
+            //            port.WriteTimeout = 500;
+            //
+            //            prog.setPort(port);
+            //            prog.ClosePort();
+            //            prog.OpenPort();
+            //
+            //            //prog.InitiateCallbacks();
+            //            prog.setInitialTime();
 
-            prog.setPort(port);
-            prog.ClosePort();
-            prog.OpenPort();
-
-            //prog.InitiateCallbacks();
-            prog.setInitialTime();
-
-            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
-            threadRec.Start();
+            //            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
+            //            threadRec.Start();
 
 
             // Create the ServiceHost.
             // attempt 1
             //using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost), baseAddress))
             //{
-            var binding = new BasicHttpBinding();
-            using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
-            {
-
-                //attempt #2
-                host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
-
-                // Enable metadata publishing.
-                //attempt 1
-                //ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-                //smb.HttpGetEnabled = true;
-                ////smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
-                //host.Description.Behaviors.Add(smb);
+            //            var binding = new BasicHttpBinding();
+            //            using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
+            //using (WebServiceHost host = new WebServiceHost(typeof(SerialSwitchServiceHost), new Uri("http://localhost:8080"))
+            //            {
+            WebServiceHost host = new WebServiceHost(typeof(SerialSwitchServiceHost), baseAddress);
+            ServiceEndpoint ep = host.AddServiceEndpoint(typeof(IArduinoSelfHost), new WebHttpBinding(), "");
+            ServiceDebugBehavior stp = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+            stp.HttpHelpPageEnabled = false;
+            host.Open();
 
 
-                // Open the ServiceHost to start listening for messages. Since
-                // no endpoints are explicitly configured, the runtime will create
-                // one endpoint per base address for each service contract implemented
-                // by the service.
-                host.Open();
+            //attempt #2
+            //      host.AddServiceEndpoint(typeof(IArduinoSelfHost), binding, baseAddress);
 
 
-                Console.WriteLine("The service is ready at {0}", baseAddress);
-                Console.WriteLine("Press <Enter> to stop the service.");
-                Console.ReadLine();
+            // Open the ServiceHost to start listening for messages. Since
+            // no endpoints are explicitly configured, the runtime will create
+            // one endpoint per base address for each service contract implemented
+            // by the service.
+            //    host.Open();
 
 
-                // Close the ServiceHost.
-                host.Close();
-                prog.ClosePort();
-            }
+            Console.WriteLine("The service is ready at {0}", baseAddress);
+            Console.WriteLine("Press <Enter> to stop the service.");
+            Console.ReadLine();
+
+
+            // Close the ServiceHost.
+            host.Close();
+            //    prog.ClosePort();
+
         }
 
 

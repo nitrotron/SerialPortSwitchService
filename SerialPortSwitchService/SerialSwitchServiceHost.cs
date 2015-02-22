@@ -184,7 +184,7 @@ namespace SerialPortSwitchService
 
         private void SetTestData()
         {
-            _Status["Thermometer0"] = "100.5";
+            _Status["Thermometer0"] = "99.5";
             _Status["ThermometerHighAlarm0"] = "212";
             _Status["ThermometerLowAlarm0"] = "14";
         }
@@ -248,7 +248,7 @@ namespace SerialPortSwitchService
 
         static void Main(string[] args)
         {
-            Uri baseAddress = new Uri("http://localhost:8080/SerialSwitch");
+            Uri baseAddress = new Uri("http://localhost:51887/SerialSwitch");
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";

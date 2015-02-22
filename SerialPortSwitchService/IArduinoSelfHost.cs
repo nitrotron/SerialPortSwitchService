@@ -17,7 +17,8 @@ namespace SerialPortSwitchService
         string GetRawStatus();
         [OperationContract]
         [WebGet(UriTemplate = "GetStatus", ResponseFormat = WebMessageFormat.Json)]
-        Dictionary<string, string> GetStatus();
+        string GetStatus();
+        //Dictionary<string, string> GetStatus();
         [OperationContract]
         [WebInvoke(RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, UriTemplate = "SendCommand/{arduinoCommands}/{text}", Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped)]
         void SendCommand(string arduinoCommands, string text);

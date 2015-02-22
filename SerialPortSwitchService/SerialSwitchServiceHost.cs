@@ -9,6 +9,8 @@ using System.IO.Ports;
 using System.Threading;
 using System.Globalization;
 using System.ServiceModel.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace SerialPortSwitchService
 {
@@ -55,15 +57,15 @@ namespace SerialPortSwitchService
             return string.Empty;
         }
 
-        public Dictionary<string, string> GetStatus()
+        public string GetStatus()
         {
             count = count + 1;
             CultureInfo ci = new CultureInfo("en-US");
             Status["ServerTime"] = DateTime.Now.ToString(ci);
-            
+            var jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
+            return JsonConvert.SerializeObject(Status, Formatting.Indented, jsonSerializerSettings);
 
-
-            return Status;
+            //return Status;
         }
 
         public void SendCommand(string arduinoCommands, string text)

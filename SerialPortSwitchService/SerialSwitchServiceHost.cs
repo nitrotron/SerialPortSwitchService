@@ -248,7 +248,7 @@ namespace SerialPortSwitchService
 
         static void Main(string[] args)
         {
-            Uri baseAddress = new Uri("http://localhost:51887/SerialSwitch");
+            Uri baseAddress = new Uri("http://localhost:8080/SerialSwitch");
             SerialSwitchServiceHost prog = new SerialSwitchServiceHost();
             SerialPort port = new SerialPort();
             port.PortName = "COM3";
@@ -278,7 +278,7 @@ namespace SerialPortSwitchService
             //{
             //            var binding = new BasicHttpBinding();
             //            using (ServiceHost host = new ServiceHost(typeof(SerialSwitchServiceHost)))
-            //using (WebServiceHost host = new WebServiceHost(typeof(SerialSwitchServiceHost), new Uri("http://localhost:8080"))
+            //using (WebServiceHost host = new WebServiceHost(typeof(SerialSwitchServiceHost), new Uri("http://localhost:5000"))
             //            {
             WebServiceHost host = new WebServiceHost(typeof(SerialSwitchServiceHost), baseAddress);
             ServiceEndpoint ep = host.AddServiceEndpoint(typeof(IArduinoSelfHost), new WebHttpBinding(), "");
@@ -308,12 +308,7 @@ namespace SerialPortSwitchService
             //    prog.ClosePort();
 
         }
-
-
-
-
-
-
+        
     }
     //}
 }

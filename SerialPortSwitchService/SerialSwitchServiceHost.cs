@@ -59,11 +59,20 @@ namespace SerialPortSwitchService
 
         public string GetStatus()
         {
+            Console.WriteLine("you have gotten a getStatus");
             count = count + 1;
+            Console.Write("count is now:" + count);
             CultureInfo ci = new CultureInfo("en-US");
             Status["ServerTime"] = DateTime.Now.ToString(ci);
+            Console.WriteLine("We're about to do a little Json");
             var jsonSerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
-            return JsonConvert.SerializeObject(Status, Formatting.Indented, jsonSerializerSettings);
+            Console.WriteLine("Done Setting up");
+            string rStr =  JsonConvert.SerializeObject(Status, Formatting.Indented, jsonSerializerSettings);
+            Console.WriteLine("Done serializing. The string is:");
+
+            Console.WriteLine(rStr);
+            return rStr;
+
 
             //return Status;
         }
@@ -125,7 +134,7 @@ namespace SerialPortSwitchService
                     //return string.Empty;
                 }
 
-                Console.WriteLine(response.ToString());
+                //Console.WriteLine(response.ToString());
                 Dictionary<string, string> responseDictionary = parseVaribles(response.ToString());
 
 

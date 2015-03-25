@@ -263,13 +263,13 @@ namespace SerialPortSwitchService
 
             prog.setPort(port);
 
-            //            prog.ClosePort();
-            //            prog.OpenPort();
-            //
-            //            prog.setInitialTime();
+            prog.ClosePort();
+            prog.OpenPort();
 
-            //            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
-            //            threadRec.Start();
+            prog.setInitialTime();
+
+            Thread threadRec = new Thread(new ThreadStart(prog.readSerial));
+            threadRec.Start();
 
 
             // Create the ServiceHost.
@@ -308,7 +308,7 @@ namespace SerialPortSwitchService
             //    prog.ClosePort();
 
         }
-        
+
     }
     //}
 }
